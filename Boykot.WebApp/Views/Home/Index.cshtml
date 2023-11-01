@@ -1,0 +1,108 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<Urun>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-8">
+                <input id="txtsearchkey" type="text" class="form-control" />
+            </div>
+            <div class="col-4">
+                <select name="criteria" id="criteria" class="form-control">
+                    <option value="Seçiniz">Seçiniz</option>
+                    @foreach (var item in Enum.GetValues(typeof(Boykot.WebApp.Enums.SearchCriteriaEnum)))
+                    {
+                        <option value="@item.ToString()">@item.ToString()</option>
+                    }
+                </select>
+            </div>
+        </div>
+        
+    </div>
+    <br />
+    <br />
+    <table id="tblProducts" class="table">
+        <tr>
+            <th style="width: 90px">Adi</th>
+            <th style="width: 120px">Marka</th>
+            <th style="width: 90px">Kod</th>
+            <th style="width: 90px">Barkod</th>
+            <th style="width: 90px">Ülke</th>
+        </tr>
+        @if (Model != null)
+        {
+            @foreach (var cost in Model)
+            {
+                <tr id="icid">
+                    <td>@cost.Adi</td>
+                    <td>@cost.Marka</td>
+                    <td>@cost.Kodu</td>
+                    <td>@cost.Barkod</td>
+                    <td>@cost.Ulke</td>
+                </tr>
+            }
+        }
+    </table>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#txtsearchkey").keyup(function () {
+                if ($(this).val().length < 3)
+                    return;
+
+                GetProducts();
+            });
+        });
+        function GetProducts() {
+            let formData = {
+                SearchText: $("#txtsearchkey").val(),
+                Criteria: $('#criteria option:selected').text(),
+            }
+            console.log(formData)
+            $.ajax({
+                type: "POST",
+                url: "/Home/SearchProducts",
+                dataType: 'json',
+                data: formData,
+                success: function (products) {
+                    var table = $("#tblProducts");
+                    console.log(products);
+                    table.find("tr:not(:first)").remove();
+                    $.each(products, function (i, products) {
+                        var table = $("#tblProducts");
+                        var row = table[0].insertRow(-1);
+                        $(row).append("<td />");
+                        $(row).find("td").eq(0).html(products.adi);
+                        $(row).append("<td />");
+                        $(row).find("td").eq(1).html(products.marka);
+                        $(row).append("<td />");
+                        $(row).find("td").eq(2).html(products.kodu);
+                        $(row).append("<td />");
+                        $(row).find("td").eq(3).html(products.barkod);
+                        $(row).append("<td />");
+                        $(row).find("td").eq(4).html(products.ulke);
+                    });
+                }
+            });
+        }
+    </script>
+    @if (Model != null)
+    {
+        <nav>
+            @Html.PagedListPager((IPagedList) Model, page => Url.Action("Index", new {page = page,
+        searchfor = @Context.Request.Query["searchfor"], searchby = @Context.Request.Query["searchby"]}),
+        new X.PagedList.Mvc.Common.PagedListRenderOptionsBase {
+        LiElementClasses = new string[] {"page-item"},
+        PageClasses = new string[] { "page-link" }
+        })
+        </nav>
+    }
+</div>
