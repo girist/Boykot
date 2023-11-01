@@ -18,7 +18,7 @@ namespace Boykot.WebApp.Controllers
             _boykotDbContext = boykotDbContext;
         }
 
-        public IActionResult Index(int? page = 1)
+        public IActionResult Index()
         {
             return View();
         }

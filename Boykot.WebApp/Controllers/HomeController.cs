@@ -1,13 +1,13 @@
 ﻿using Boykot.WebApp.Enums;
 using Boykot.WebApp.Models;
 using Boykot.WebApp.Models.Request;
+using Boykot.WebApp.Models.Response;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using X.PagedList;
 
 namespace Boykot.WebApp.Controllers
 {
@@ -24,16 +24,6 @@ namespace Boykot.WebApp.Controllers
 
         public IActionResult Index(int? page = 1)
         {
-            //if (page != null && page < 1)
-            //    page = 1;
-
-            //var pageSize = 10;
-
-            //var products = _boykotDbContext.Uruns
-            //    .OrderByDescending(s => s.Id)
-            //    .ToPagedList(page ?? 1, pageSize);
-
-            //return View(products);
             return View();
         }
 
@@ -66,24 +56,16 @@ namespace Boykot.WebApp.Controllers
             }
 
             var result = await products
-                .Select(x => new
+                .Select(x => new UrunResponseModel
                 {
-                    x.Adi,
-                    x.Barkod,
-                    x.Marka,
-                    x.Kodu,
-                    x.Ulke,
-                    x.Id,
-                    KategoriAdi = x.Kategori.Adi
+                    Adi = x.Adi,
+                    Barkod = x.Barkod,
+                    KategoriAdi = x.Kategori.Adi,
+                    Kodu = x.Kodu,
+                    Ulke = x.Ulke
                 }).ToListAsync();
 
             return Json(result);
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
