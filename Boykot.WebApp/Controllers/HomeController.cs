@@ -43,10 +43,10 @@ namespace Boykot.WebApp.Controllers
             switch ((SearchCriteriaEnum)Enum.Parse(typeof(SearchCriteriaEnum), searchRequest.Criteria, false))
             {
                 case SearchCriteriaEnum.Urun:
-                    products = products.Where(x => x.Adi.Contains(searchRequest.SearchText));
+                    products = products.Where(x => x.Adi.Contains(searchRequest.SearchText.ToUpper()));
                     break;
                 case SearchCriteriaEnum.Kategori:
-                    products = products.Where(x => x.Kategori.Adi.Contains(searchRequest.SearchText));
+                    products = products.Where(x => x.Kategori.Adi.Contains(searchRequest.SearchText.ToUpper()));
                     break;
                 case SearchCriteriaEnum.Barkod:
                     products = products.Where(x => x.Barkod == searchRequest.SearchText);
@@ -56,8 +56,10 @@ namespace Boykot.WebApp.Controllers
             }
 
             var result = await products
+                .Where(x=>!x.Aktifmi)
                 .Select(x => new UrunResponseModel
                 {
+                    Id = x.Id,
                     Adi = x.Adi,
                     Barkod = x.Barkod,
                     KategoriAdi = x.Kategori.Adi,

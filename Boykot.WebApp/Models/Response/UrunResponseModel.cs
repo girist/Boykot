@@ -2,6 +2,7 @@
 {
     public record UrunResponseModel
     {
+        public int Id { get; set; }
         public string Adi { get; init; }
         public string Kodu { get; init; }
         public string Barkod { get; init; }
