@@ -1,8 +1,7 @@
-﻿namespace Boykot.WebApp.Models
+﻿namespace Boykot.WebApp.Models.Request
 {
-    public class Urun
+    public class CreateUrunModel
     {
-        public int Id { get; set; }
         public string Adi { get; set; }
         public string Kodu { get; set; }
         public string Barkod { get; set; }
@@ -14,6 +13,5 @@
         public string Not2 { get; set; }
         public string Resim { get; set; }
         public bool Aktifmi { get; set; }
-        public virtual Kategori Kategori { get; set; }
     }
 }
