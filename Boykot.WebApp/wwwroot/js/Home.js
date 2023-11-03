@@ -1,14 +1,9 @@
-function sleep(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
-
 $(function () {
     $("#txtsearchkey").keyup(function () {
         if ($(this).val().length < 3) {
             return;
         } else {
             $('.spinner').css('display', 'block');
-            await sleep(2000);
             GetProducts();
         }
     });
