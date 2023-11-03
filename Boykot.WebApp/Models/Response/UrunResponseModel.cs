@@ -1,4 +1,6 @@
-﻿namespace Boykot.WebApp.Models.Response
+﻿using System.Collections.Generic;
+
+namespace Boykot.WebApp.Models.Response
 {
     public record UrunResponseModel
     {
@@ -13,5 +15,6 @@
         public string Not1 { get; set; }
         public string Not2 { get; set; }
         public string Resim { get; set; }
+        public string Marka { get; init; }
     }
 }

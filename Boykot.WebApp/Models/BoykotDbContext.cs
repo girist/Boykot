@@ -10,6 +10,5 @@ namespace Boykot.WebApp.Models
         }
 
         public DbSet<Urun> Uruns { get; set; }
-        public DbSet<Kategori> Kategoris { get; set; }
     }
 }

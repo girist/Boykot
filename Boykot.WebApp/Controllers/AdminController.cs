@@ -46,7 +46,6 @@ namespace Boykot.WebApp.Controllers
                     Barkod = product.Barkod,
                     Firma = product.Firma,
                     Id = product.Id,
-                    KategoriAdi = product.Kategori?.Adi ?? string.Empty,
                     Kodu = product.Kodu,
                     Ulke = product.Ulke,
                     Not1 = product.Not1,

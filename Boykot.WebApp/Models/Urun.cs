@@ -14,6 +14,5 @@
         public string Not2 { get; set; }
         public string Resim { get; set; }
         public bool Aktifmi { get; set; } = false;
-        public virtual Kategori Kategori { get; set; }
     }
 }
