@@ -1,7 +1,8 @@
 ﻿namespace Boykot.WebApp.Models.Request
 {
-    public class CreateUrunModel
+    public class CreateUrunRequestModel
     {
+        public int Id { get; set; }
         public string Adi { get; set; }
         public string Kodu { get; set; }
         public string Barkod { get; set; }
@@ -12,6 +13,5 @@
         public string Not1 { get; set; }
         public string Not2 { get; set; }
         public string Resim { get; set; }
-        public bool Aktifmi { get; set; }
     }
 }
