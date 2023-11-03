@@ -77,13 +77,6 @@ namespace Boykot.WebApp.Controllers
                 ViewBag.Message = $"Barkod Bos Olamaz!!";
                 return View();
             }
-
-            bool hasProduct = _boykotDbContext.Uruns.Any(x => x.Barkod == model.Barkod.Trim());
-            if (hasProduct)
-            {
-                ViewBag.Message = $"Bu Barkod Sistemde Kayitlidir! : {model.Barkod}";
-                return View();
-            }
             #endregion
 
             try
@@ -109,6 +102,7 @@ namespace Boykot.WebApp.Controllers
                         .FirstOrDefault();
 
                     hasproduct.Kodu = model.Kodu;
+                    hasproduct.Ulke = model.Ulke;
                     hasproduct.Not1 = model.Not1;
                     hasproduct.Barkod = model.Barkod;
                     hasproduct.Firma = model.Firma;
@@ -116,12 +110,19 @@ namespace Boykot.WebApp.Controllers
                     hasproduct.Marka = model.Marka;
                     hasproduct.Aciklama = model.Aciklama;
                     hasproduct.Not2 = model.Not2;
-                    hasproduct.Resim = file.FileName == null ? (model.Resim == null ? "/images/no_product.png"
+                    hasproduct.Resim = file?.FileName == null ? (model.Resim == null ? "/images/no_product.png"
                                                                                     : model.Resim)
                                                             : $"/images/{ImageUpload(file).Result ?? "/images/no_product.png"}";
                 }
                 else
                 {
+                    bool hasProduct = _boykotDbContext.Uruns.Any(x => x.Barkod == model.Barkod.Trim());
+                    if (hasProduct)
+                    {
+                        ViewBag.Message = $"Bu Barkod Sistemde Kayitlidir! : {model.Barkod}";
+                        return View();
+                    }
+
                     await _boykotDbContext.Uruns.AddAsync(product);
                 }
 
