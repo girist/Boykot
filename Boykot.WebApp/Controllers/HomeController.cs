@@ -1,4 +1,5 @@
 ﻿using Boykot.WebApp.Enums;
+using Boykot.WebApp.Extensions;
 using Boykot.WebApp.Models;
 using Boykot.WebApp.Models.Request;
 using Boykot.WebApp.Models.Response;
@@ -37,13 +38,13 @@ namespace Boykot.WebApp.Controllers
         {
             var products = _boykotDbContext.Uruns.AsQueryable();
 
-            if (searchRequest.SearchText is null)
+            if (string.IsNullOrEmpty(searchRequest.SearchText))
                 return null;
 
             switch ((SearchCriteriaEnum)Enum.Parse(typeof(SearchCriteriaEnum), searchRequest.Criteria, false))
             {
                 case SearchCriteriaEnum.Urun:
-                    products = products.Where(x => x.Adi.Contains(searchRequest.SearchText.ToUpper()));
+                    products = products.Where(x => x.Adi.Contains(searchRequest.SearchText.GetStringReplace()));
                     break;
                 //case SearchCriteriaEnum.Kategori:
                 //    products = products.Where(x => x.Kategori.Adi.Contains(searchRequest.SearchText.ToUpper()));
@@ -56,9 +57,10 @@ namespace Boykot.WebApp.Controllers
             }
             var result = products.ToArray()
                                 .Where(x => !x.Aktifmi)
-                                .Select(x => new { x.Id,x.Adi,x.Barkod,x.Kodu,x.Ulke,x.Marka})
+                                .Select(x => new { x.Id, x.Adi, x.Barkod, x.Kodu, x.Ulke, x.Marka })
                                 .GroupBy(x => new { x.Marka })
-                                .Select(s => new{ 
+                                .Select(s => new
+                                {
                                     Count = s.Count(),
                                     Marka = s.Key.Marka,
                                     Uruns = s.Take(1)

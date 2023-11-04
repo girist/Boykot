@@ -1,10 +1,17 @@
+function sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+async function fun() {
+    await sleep(1000);
+    GetProducts();
+}
 $(function () {
     $("#txtsearchkey").keyup(function () {
         if ($(this).val().length < 3) {
             return;
         } else {
             $('.spinner').css('display', 'block');
-            GetProducts();
+            fun();
         }
     });
 });
