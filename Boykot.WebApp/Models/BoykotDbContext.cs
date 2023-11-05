@@ -10,5 +10,6 @@ namespace Boykot.WebApp.Models
         }
 
         public DbSet<Urun> Uruns { get; set; }
+        public DbSet<User>  Users { get; set; }
     }
 }

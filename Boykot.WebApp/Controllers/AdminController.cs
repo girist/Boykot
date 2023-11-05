@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Boykot.WebApp.Models.Response;
+using System.Text;
 
 namespace Boykot.WebApp.Controllers
 {
@@ -22,15 +23,64 @@ namespace Boykot.WebApp.Controllers
             _logger = logger;
             _boykotDbContext = boykotDbContext;
         }
-
+        /// <summary>
+        /// User Login - Get
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpGet]
         public IActionResult Index()
         {
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("user")))
+                return RedirectToAction("List");
+
+            return View();
+        }
+        /// <summary>
+        /// User Login - Post
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult Index(UserLoginRequestModel model)
+        {
+            if (model is null)
+            {
+                ViewBag.Message = "Bilgiler Bos Gecilemez!";
+                return View();
+            }
+
+            var user = _boykotDbContext.Users
+                .Where(x => !x.IsActive && x.UserName == model.UserName.Trim() && x.Password == model.Password)
+                .FirstOrDefault();
+            if (user is null)
+            {
+                ViewBag.Message = "Kullanici Adi veya Sifre Hatali!";
+                return View();
+            }
+
+            HttpContext.Session.SetString("user", model.UserName);
+            return RedirectToAction("List");
+        }
+
+        /// <summary>
+        /// Product List
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult List()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("user")))
+                return RedirectToAction("Index");
+
             return View();
         }
 
         [HttpGet]
         public IActionResult CreateOrUpdate(int? id)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("user")))
+                return RedirectToAction("Index");
+
             if (id.HasValue)
             {
                 var product = _boykotDbContext.Uruns

@@ -1,5 +1,6 @@
 $(function () {
     $("#txtsearchkey").keyup(function () {
+        $("#tblProducts").empty();
         if ($(this).val().length < 3) {
             return;
         } else {

@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Yonetim - Liste";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/sniper.css" rel="stylesheet" />
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            <input id="txtsearchkey" placeholder="Aranacak kelime *(Minimum 3 Karakter)" type="text" class="form-control" />
+        </div>
+        <div class="col-4">
+            <select name="criteria" id="criteria" class="form-control">
+                @foreach (var item in Enum.GetValues(typeof(Boykot.WebApp.Enums.SearchCriteriaEnum)))
+                {
+                    <option value="@item.ToString()">@item.ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="spinner" style="display:none">
+        <div class="center-div">
+            <div class="inner-div">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+   
+    <table id="tblProducts" class="table table-hover">
+    </table>
+
+    @Html.ActionLink("Ürün Ekle", "CreateOrUpdate", "Admin")
+    <script src="~/js/home.js"></script>
+</div>
+
+
