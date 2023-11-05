@@ -1,6 +1,4 @@
-﻿@model IEnumerable<Urun>
-
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 <link href="~/css/sniper.css" rel="stylesheet" />
@@ -11,44 +9,23 @@
         </div>
         <div class="col-4">
             <select name="criteria" id="criteria" class="form-control">
-                <option value="Urun">Urun</option>
-                @*@foreach (var item in Enum.GetValues(typeof(Boykot.WebApp.Enums.SearchCriteriaEnum)))
+                @foreach (var item in Enum.GetValues(typeof(Boykot.WebApp.Enums.SearchCriteriaEnum)))
                 {
-                <option value="@item.ToString()">@item.ToString()</option>
-                }*@
+                    <option value="@item.ToString()">@item.ToString()</option>
+                }
             </select>
         </div>
     </div>
-</div>
-<div class="spinner" style="display:none">
-    <div class="center-div">
-        <div class="inner-div">
-            <div class="loader"></div>
+    <div class="spinner" style="display:none">
+        <div class="center-div">
+            <div class="inner-div">
+                <div class="loader"></div>
+            </div>
         </div>
     </div>
+    <br />
+    <br />
+    <table id="tblProducts" class="table table-hover">
+    </table>
+    <script src="~/js/home.js"></script>
 </div>
-<br />
-<br />
-<table id="tblProducts" class="table table-hover">
-    <tr>
-        <th style="width: 40px">Adi</th>
-        <th style="width: 40px">Marka</th>
-        <th style="width: 20px">Kod</th>
-        <th style="width: 20px">Barkod</th>
-        <th style="width: 20px">Ülke</th>
-    </tr>
-    @if (Model != null)
-    {
-        @foreach (var cost in Model)
-        {
-            <tr id="icid">
-                <td>@cost.Adi</td>
-                <td>@cost.Marka</td>
-                <td>@cost.Kodu</td>
-                <td>@cost.Barkod</td>
-                <td>@cost.Ulke</td>
-            </tr>
-        }
-    }
-</table>
-<script src="~/js/home.js"></script>

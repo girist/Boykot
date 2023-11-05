@@ -23,7 +23,7 @@ namespace Boykot.WebApp.Controllers
             _boykotDbContext = boykotDbContext;
         }
 
-        public IActionResult Index(int? page = 1)
+        public IActionResult Index()
         {
             return View();
         }
@@ -46,18 +46,16 @@ namespace Boykot.WebApp.Controllers
                 case SearchCriteriaEnum.Urun:
                     products = products.Where(x => x.Adi.Contains(searchRequest.SearchText.GetStringReplace()));
                     break;
-                //case SearchCriteriaEnum.Kategori:
-                //    products = products.Where(x => x.Kategori.Adi.Contains(searchRequest.SearchText.ToUpper()));
-                //    break;
                 case SearchCriteriaEnum.Barkod:
-                    products = products.Where(x => x.Barkod == searchRequest.SearchText);
+                    products = products.Where(x => x.Barkod.Contains(searchRequest.SearchText));
                     break;
                 default:
                     break;
             }
+
             var result = products.ToArray()
                                 .Where(x => !x.Aktifmi)
-                                .Select(x => new { x.Id, x.Adi, x.Barkod, x.Kodu, x.Ulke, x.Marka })
+                                .Select(x => new { x.Id, x.Adi, x.Barkod, x.Ulke, x.Marka, x.Aciklama, x.Firma })
                                 .GroupBy(x => new { x.Marka })
                                 .Select(s => new
                                 {
@@ -67,10 +65,11 @@ namespace Boykot.WebApp.Controllers
                                 }).Select(t => new UrunResponseModel
                                 {
                                     Adi = t.Uruns.Select(s => s.Adi).FirstOrDefault(),
-                                    Kodu = t.Uruns.Select(s => s.Kodu).FirstOrDefault(),
                                     Marka = t.Uruns.Select(s => s.Marka).FirstOrDefault(),
                                     Barkod = t.Uruns.Select(s => s.Barkod).FirstOrDefault(),
                                     Ulke = t.Uruns.Select(s => s.Ulke).FirstOrDefault(),
+                                    Aciklama = t.Uruns.Select(s => s.Aciklama).FirstOrDefault(),
+                                    Firma = t.Uruns.Select(s => s.Firma).FirstOrDefault(),
                                 }).ToList();
 
             return Json(result);

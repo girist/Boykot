@@ -1,9 +1,12 @@
-﻿namespace Boykot.WebApp.Enums
+﻿using System.ComponentModel;
+
+namespace Boykot.WebApp.Enums
 {
     public enum SearchCriteriaEnum
     {
-        Barkod=0,
-        Urun=1,
-        Kategori=2
+        [Description("Barkod")]
+        Barkod = 1,
+        [Description("Ürün Adi")]
+        Urun = 0
     }
 }
