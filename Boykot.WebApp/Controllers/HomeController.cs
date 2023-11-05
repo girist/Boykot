@@ -43,8 +43,8 @@ namespace Boykot.WebApp.Controllers
 
             switch ((SearchCriteriaEnum)Enum.Parse(typeof(SearchCriteriaEnum), searchRequest.Criteria, false))
             {
-                case SearchCriteriaEnum.Urun:
-                    products = products.Where(x => x.Adi.Contains(searchRequest.SearchText.GetStringReplace()));
+                case SearchCriteriaEnum.Marka:
+                    products = products.Where(x => x.Marka.Contains(searchRequest.SearchText.GetStringReplace()));
                     break;
                 case SearchCriteriaEnum.Barkod:
                     products = products.Where(x => x.Barkod.Contains(searchRequest.SearchText));

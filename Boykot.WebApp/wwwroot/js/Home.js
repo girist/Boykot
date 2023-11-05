@@ -30,10 +30,10 @@ function GetProducts() {
         success: function (products) {
             var table = $("#tblProducts");
             console.log(products);
-            if (formData.Criteria == "Barkod") {
-                table.append("<tr><th>Adi</th><th>Barkod</th><th>Marka</th><th>Firma</th><th>Ulke</th></tr>");
+            if (formData.Criteria == "Marka") {
+                table.append("<tr><th>Marka</th><th>Firma</th><th>Ulke</th><th>Aciklama</th></tr>");
             } else {
-                table.append("<tr><th>Marka</th><th>Aciklama</th><th>Ulke</th></tr>");
+                table.append("<tr><th>Adi</th><th>Barkod</th><th>Marka</th><th>Firma</th><th>Ulke</th></tr>");
             }
             table.find("tr:not(:first)").remove();
             $.each(products, function (i, products) {
@@ -41,7 +41,15 @@ function GetProducts() {
                 var row = table[0].insertRow(1);
                 $(row).append("<td />");
 
-                if (formData.Criteria == "Barkod") {
+                if (formData.Criteria == "Marka") {
+                    $(row).find("td").eq(0).html(products.marka);
+                    $(row).append("<td />");
+                    $(row).find("td").eq(1).html(products.firma);
+                    $(row).append("<td />");
+                    $(row).find("td").eq(2).html(products.ulke);
+                    $(row).append("<td />");
+                    $(row).find("td").eq(3).html(products.aciklama);
+                } else {
                     $(row).find("td").eq(0).html(products.adi);
                     $(row).append("<td />");
                     $(row).find("td").eq(1).html(products.barkod);
@@ -51,13 +59,6 @@ function GetProducts() {
                     $(row).find("td").eq(3).html(products.firma);
                     $(row).append("<td />");
                     $(row).find("td").eq(4).html(products.ulke);
-                    $(row).append("<td />");
-                } else {
-                    $(row).find("td").eq(0).html(products.marka);
-                    $(row).append("<td />");
-                    $(row).find("td").eq(1).html(products.aciklama);
-                    $(row).append("<td />");
-                    $(row).find("td").eq(2).html(products.ulke);
                     $(row).append("<td />");
                 }
             });

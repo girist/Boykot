@@ -6,7 +6,7 @@ namespace Boykot.WebApp.Enums
     {
         [Description("Barkod")]
         Barkod = 1,
-        [Description("Ürün Adi")]
-        Urun = 0
+        [Description("Marka Adi")]
+        Marka = 0
     }
 }
