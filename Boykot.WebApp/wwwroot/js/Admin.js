@@ -1,12 +1,15 @@
+function sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+async function fun() {
+    await sleep(500);
+    GetProducts();
+}
 $(function () {
     $("#txtsearchkey").keyup(function () {
         $("#tblProducts").empty();
-        if ($(this).val().length < 3) {
-            return;
-        } else {
-            $('.spinner').css('display', 'block');
-            GetProducts();
-        }
+        $('.spinner').css('display', 'block');
+        fun();
     });
 });
 function GetProducts() {

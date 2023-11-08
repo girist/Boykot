@@ -198,7 +198,7 @@ namespace Boykot.WebApp.Controllers
                 return Json(null);
 
             var urun = await _boykotDbContext.Uruns
-                .Where(x => x.Id == Id && x.Aktifmi == false)
+                .Where(x => x.Id == Id && x.Aktifmi == true)
                 .FirstAsync();
 
             if (urun == null)

@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Data.SqlTypes;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Razor.Text;
 
 namespace Boykot.WebApp.Controllers
 {
@@ -44,7 +47,7 @@ namespace Boykot.WebApp.Controllers
             switch ((SearchCriteriaEnum)Enum.Parse(typeof(SearchCriteriaEnum), searchRequest.Criteria, false))
             {
                 case SearchCriteriaEnum.Marka:
-                    products = products.Where(x => x.Marka.Contains(searchRequest.SearchText.GetStringReplace()));
+                    products = GetProduct(searchRequest.SearchText ,products);
                     break;
                 case SearchCriteriaEnum.Barkod:
                     products = products.Where(x => x.Barkod.Contains(searchRequest.SearchText));
@@ -54,7 +57,7 @@ namespace Boykot.WebApp.Controllers
             }
 
             var result = products.ToArray()
-                                .Where(x => !x.Aktifmi)
+                                .Where(x => x.Aktifmi)
                                 .Select(x => new { x.Id, x.Adi, x.Barkod, x.Ulke, x.Marka, x.Aciklama, x.Firma })
                                 .GroupBy(x => new { x.Marka })
                                 .Select(s => new
@@ -73,6 +76,27 @@ namespace Boykot.WebApp.Controllers
                                 }).ToList();
 
             return Json(result);
+        }
+
+        public IQueryable<Urun> GetProduct(string key,IQueryable<Urun> urun)
+        {
+            var products = urun.Where(x => x.Marka.Contains(key));
+
+            if (products != null)
+                return products;
+
+            if (products == null)
+                products = products.Where(x => x.Marka.Contains(key.GetStringReplace()));
+            else if(products is null)
+                products = products.Where(x => x.Marka.ToUpper().Contains(key.ToUpper()));
+            else if(products is null)
+                products = products.Where(x => x.Marka.ToLower().Contains(key.ToLower()));
+            else if (products is null)
+                products = products.Where(x => x.Marka.Contains(key, StringComparison.OrdinalIgnoreCase));
+            else if(products is null)
+                products = products.Where(x => Regex.IsMatch(x.Marka, Regex.Escape(key), RegexOptions.IgnoreCase));
+
+            return products;
         }
     }
 }

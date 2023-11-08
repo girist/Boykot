@@ -8,12 +8,8 @@ async function fun() {
 $(function () {
     $("#txtsearchkey").keyup(function () {
         $("#tblProducts").empty();
-        if ($(this).val().length < 3) {
-            return;
-        } else {
-            $('.spinner').css('display', 'block');
-            fun();
-        }
+        $('.spinner').css('display', 'block');
+        fun();
     });
 });
 function GetProducts() {
