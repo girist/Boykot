@@ -13,6 +13,6 @@
         public string Not1 { get; set; }
         public string Not2 { get; set; }
         public string Resim { get; set; }
-        public bool Aktifmi { get; set; } = false;
+        public bool Aktifmi { get; set; } = true;
     }
 }

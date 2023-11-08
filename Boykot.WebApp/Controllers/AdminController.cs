@@ -51,7 +51,7 @@ namespace Boykot.WebApp.Controllers
             }
 
             var user = _boykotDbContext.Users
-                .Where(x => !x.IsActive && x.UserName == model.UserName.Trim() && x.Password == model.Password)
+                .Where(x => x.IsActive && x.UserName == model.UserName.Trim() && x.Password == model.Password)
                 .FirstOrDefault();
             if (user is null)
             {
