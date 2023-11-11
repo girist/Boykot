@@ -4,14 +4,11 @@ using Boykot.WebApp.Models;
 using Boykot.WebApp.Models.Request;
 using Boykot.WebApp.Models.Response;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web.Razor.Text;
 
 namespace Boykot.WebApp.Controllers
 {
@@ -67,6 +64,7 @@ namespace Boykot.WebApp.Controllers
                                     Uruns = s.Take(1)
                                 }).Select(t => new UrunResponseModel
                                 {
+                                    Id = t.Uruns.Select(s => s.Id).FirstOrDefault(),
                                     Adi = t.Uruns.Select(s => s.Adi).FirstOrDefault(),
                                     Marka = t.Uruns.Select(s => s.Marka).FirstOrDefault(),
                                     Barkod = t.Uruns.Select(s => s.Barkod).FirstOrDefault(),

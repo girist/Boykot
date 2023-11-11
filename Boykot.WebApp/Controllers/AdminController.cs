@@ -84,7 +84,7 @@ namespace Boykot.WebApp.Controllers
             if (id.HasValue)
             {
                 var product = _boykotDbContext.Uruns
-                    .Where(x => x.Id == id && !x.Aktifmi)
+                    .Where(x => x.Id == id && x.Aktifmi)
                     .FirstOrDefault();
 
                 if (product is null)
@@ -101,7 +101,8 @@ namespace Boykot.WebApp.Controllers
                     Not1 = product.Not1,
                     Not2 = product.Not2,
                     Aciklama = product.Aciklama,
-                    Resim = product.Resim
+                    Resim = product.Resim,
+                    Marka = product.Marka
                 };
 
                 return View(response);
@@ -121,11 +122,11 @@ namespace Boykot.WebApp.Controllers
             if (model is null)
                 return null;
 
-            if (model.Barkod is null)
-            {
-                ViewBag.Message = $"Barkod Bos Olamaz!!";
-                return View();
-            }
+            //if (model.Barkod is null)
+            //{
+            //    ViewBag.Message = $"Barkod Bos Olamaz!!";
+            //    return View();
+            //}
             #endregion
 
             try
@@ -204,7 +205,7 @@ namespace Boykot.WebApp.Controllers
             if (urun == null)
                 return Json(null);
 
-            urun.Aktifmi = true;
+            urun.Aktifmi = false;
             var result = await _boykotDbContext.SaveChangesAsync();
             return Json(result);
         }

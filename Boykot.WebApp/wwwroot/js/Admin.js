@@ -26,24 +26,25 @@ function GetProducts() {
         success: function (products) {
             var table = $("#tblProducts");
             console.log(products);
+            table.append("<tr><th>Marka</th><th>Kod</th><th>Barkod</th><th>Ulke</th><th>Sil</th><th>Guncelle</th></tr>");
             table.find("tr:not(:first)").remove();
             $.each(products, function (i, products) {
                 var table = $("#tblProducts");
                 var row = table[0].insertRow(-1);
+                //$(row).append("<td />");
+                //$(row).find("td").eq(0).html(products.adi);
                 $(row).append("<td />");
-                $(row).find("td").eq(0).html(products.adi);
+                $(row).find("td").eq(0).html(products.marka);
                 $(row).append("<td />");
-                $(row).find("td").eq(1).html(products.marka);
+                $(row).find("td").eq(1).html(products.kodu);
                 $(row).append("<td />");
-                $(row).find("td").eq(2).html(products.kodu);
+                $(row).find("td").eq(2).html(products.barkod);
                 $(row).append("<td />");
-                $(row).find("td").eq(3).html(products.barkod);
+                $(row).find("td").eq(3).html(products.ulke);
                 $(row).append("<td />");
-                $(row).find("td").eq(4).html(products.ulke);
+                $(row).find("td").eq(4).html("<img src='/images/icons/delete.png' alt='sil' width='20' height='20' class='rounded-circle' value='Sil' onclick='DeleteOdemeSeti(" + products.id + ")'>");
                 $(row).append("<td />");
-                $(row).find("td").eq(5).html("<img src='/images/icons/delete.png' alt='sil' width='20' height='20' class='rounded-circle' value='Sil' onclick='DeleteOdemeSeti(" + products.id + ")'>");
-                $(row).append("<td />");
-                $(row).find("td").eq(6).html("<a href='Admin/CreateOrUpdate?id=" + products.id + "'>Güncelle</a>");
+                $(row).find("td").eq(5).html("<a href='/Admin/CreateOrUpdate?id=" + products.id + "'>Guncelle</a>");
                 $('.spinner').css('display', 'none');
             });
         }
@@ -51,7 +52,7 @@ function GetProducts() {
 }
 //product delete func
 function DeleteOdemeSeti(id) {
-    let result = confirm("Silmek istediðinizden Emin Misiniz?");
+    let result = confirm("Silmek istediginizden emin misiniz ?");
     let formData = {
         id: id,
     }
@@ -63,7 +64,9 @@ function DeleteOdemeSeti(id) {
             dataType: 'json',
             data: formData,
             success: function (response) {
-                alert("Ýslem Basarili");
+                alert("islem Basarili.");
+               // location.reload(true);
+                GetProducts();
             },
             failure: function (response) {
                 alert(response.responseText);
@@ -73,6 +76,6 @@ function DeleteOdemeSeti(id) {
             }
         });
     } else {
-        alert("Ýþlemde Ýptal Edildi");
+        alert("islem iptal Edildi !");
     }
 }
