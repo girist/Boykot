@@ -9,6 +9,12 @@ namespace Boykot.WebApp.Models
                 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Urun>()
+                .Property(s => s.Aktifmi)
+                .HasDefaultValueSql("CONVERT([bit],(1))");
+        }
         public DbSet<Urun> Uruns { get; set; }
         public DbSet<User>  Users { get; set; }
     }
