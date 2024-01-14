@@ -29,10 +29,12 @@ namespace Boykot.WebApp
             {
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnection"));
             });
+            services.AddMvc().AddSessionStateTempDataProvider();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
+            services.AddHttpContextAccessor();
             services.AddControllersWithViews();
         }
 

@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "DocumentUpload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>DocumentUpload</h1>
+
+<form asp-controller="Admin" asp-action="DocumentUpload" method="post" enctype="multipart/form-data">
+    <input type="file" name="postedFile" />
+    <input type="submit" value="Import" />
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            alert("@ViewBag.Message");
+        };
+    </script>
+}

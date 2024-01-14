@@ -10,6 +10,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Boykot.WebApp.Models.Response;
 using System.Text;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using System.Data.OleDb;
+
 
 namespace Boykot.WebApp.Controllers
 {
@@ -17,11 +23,17 @@ namespace Boykot.WebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly BoykotDbContext _boykotDbContext;
-
-        public AdminController(ILogger<HomeController> logger, BoykotDbContext boykotDbContext = null)
+        private IHostingEnvironment Environment;
+        private IConfiguration Configuration;
+        public AdminController(
+            ILogger<HomeController> logger, 
+            BoykotDbContext boykotDbContext = null,
+            IHostingEnvironment _environment=null, IConfiguration _configuration=null)
         {
             _logger = logger;
             _boykotDbContext = boykotDbContext;
+            Environment = _environment;
+            Configuration = _configuration;
         }
         /// <summary>
         /// User Login - Get
@@ -59,7 +71,7 @@ namespace Boykot.WebApp.Controllers
                 return View();
             }
 
-            HttpContext.Session.SetString("user", model.UserName);
+            HttpContext.Session.SetString("user",model.UserName);
             return RedirectToAction("List");
         }
 
@@ -229,6 +241,110 @@ namespace Boykot.WebApp.Controllers
             }
 
             return string.Empty;
+        }
+        [HttpGet]
+        public IActionResult DocumentUpload()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("user")))
+                return RedirectToAction("Index");
+            return View();
+        }
+        [HttpPost]
+        public IActionResult DocumentUpload(IFormFile postedFile)
+        {
+            string message = string.Empty;
+            if (postedFile != null)
+            {
+                //Create a Folder.
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads/");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = Path.GetFileName(postedFile.FileName);
+                string filePath = Path.Combine(path, fileName);
+                using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    postedFile.CopyTo(stream);
+                }
+
+                string conString = this.Configuration.GetConnectionString("ExcelConString");
+                DataTable dt = new DataTable();
+                conString = string.Format(conString, filePath);
+
+                #region Excel Read
+                try
+                {
+                    using (OleDbConnection connExcel = new OleDbConnection(conString))
+                    {
+                        using (OleDbCommand cmdExcel = new OleDbCommand())
+                        {
+                            using (OleDbDataAdapter odaExcel = new OleDbDataAdapter())
+                            {
+                                cmdExcel.Connection = connExcel;
+
+                                //Get the name of First Sheet.
+                                connExcel.Open();
+                                DataTable dtExcelSchema;
+                                dtExcelSchema = connExcel.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                                string sheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                                connExcel.Close();
+
+                                connExcel.Open();
+                                cmdExcel.CommandText = "SELECT * From [" + sheetName + "]";
+                                odaExcel.SelectCommand = cmdExcel;
+                                odaExcel.Fill(dt);
+                                connExcel.Close();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = ex.Message.ToString();
+                }
+
+                #endregion
+                #region Excel Data Insert
+                try
+                {
+                    conString = this.Configuration.GetConnectionString("SqlConnection");
+                    using (SqlConnection con = new SqlConnection(conString))
+                    {
+                        using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(con))
+                        {
+                            sqlBulkCopy.DestinationTableName = "dbo.Uruns";
+
+                            sqlBulkCopy.ColumnMappings.Add("ProductName", "Adi");
+                            sqlBulkCopy.ColumnMappings.Add("Kodu", "Kodu");
+                            sqlBulkCopy.ColumnMappings.Add("Barcode", "Barkod");
+                            sqlBulkCopy.ColumnMappings.Add("Firma", "Firma");
+                            sqlBulkCopy.ColumnMappings.Add("Ulke", "Ulke");
+                            sqlBulkCopy.ColumnMappings.Add("Marka", "Marka");
+                            sqlBulkCopy.ColumnMappings.Add("Aciklama", "Aciklama");
+                            sqlBulkCopy.ColumnMappings.Add("Aciklama1", "Aciklama1");
+                            sqlBulkCopy.ColumnMappings.Add("Aciklama2", "Aciklama2");
+                            sqlBulkCopy.ColumnMappings.Add("Aciklama3", "Aciklama3");
+                            sqlBulkCopy.ColumnMappings.Add("Not1", "Not1");
+                            sqlBulkCopy.ColumnMappings.Add("Not2", "Not2");
+                            sqlBulkCopy.ColumnMappings.Add("Resim", "Resim");
+                            sqlBulkCopy.ColumnMappings.Add("Aktifmi", "Aktifmi");
+
+                            con.Open();
+                            sqlBulkCopy.WriteToServer(dt);
+                            con.Close();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = ex.Message.ToString();
+                }
+                #endregion
+            }
+            ViewBag.Message = "Islem Basarili";
+            return View();
         }
         #endregion
     }

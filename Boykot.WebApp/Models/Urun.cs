@@ -14,5 +14,8 @@
         public string Not2 { get; set; }
         public string Resim { get; set; }
         public bool Aktifmi { get; set; } = true;
+        public string Aciklama1 { get; set; }
+        public string Aciklama2 { get; set; }
+        public string Aciklama3 { get; set; }
     }
 }
